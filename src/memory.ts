@@ -15,6 +15,7 @@ import {
 } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, isAbsolute, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 
 export type Source = { name: string; dir: string; exclude?: string[] };
@@ -294,6 +295,9 @@ export async function search(
     }));
 }
 
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+
 export function display(path: string): string {
+  if (path.startsWith(REPO + "/")) return relative(REPO, path);
   return path.startsWith(homedir()) ? "~" + path.slice(homedir().length) : path;
 }
