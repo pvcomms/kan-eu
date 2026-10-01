@@ -17,6 +17,7 @@ import { homedir } from "node:os";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
+import { RUNTIME } from "./ollama.ts";
 
 export type Source = { name: string; dir: string; exclude?: string[] };
 export type MemoryConfig = {
@@ -131,7 +132,12 @@ async function embed(
   const res = await fetch(`${base}/api/embed`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ model, input: inputs, truncate: true }),
+    body: JSON.stringify({
+      model,
+      input: inputs,
+      truncate: true,
+      keep_alive: RUNTIME.keep_alive,
+    }),
   });
   if (!res.ok) throw new Error(`embed ${res.status}: ${await res.text()}`);
   const { embeddings } = (await res.json()) as { embeddings: number[][] };

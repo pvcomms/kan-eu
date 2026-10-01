@@ -10,7 +10,7 @@ import {
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { ROOT, loadConfig, turn, type Event } from "./core.ts";
-import { installed } from "./ollama.ts";
+import { installed, warm } from "./ollama.ts";
 import { display } from "./memory.ts";
 
 const cfg = loadConfig();
@@ -138,4 +138,5 @@ createServer(async (req, res) => {
   }
 }).listen(PORT, "127.0.0.1", () => {
   process.stderr.write(`kan · http://127.0.0.1:${PORT}\n`);
+  warm(cfg.ollama, cfg.models.fast.model, cfg.memory.embed);
 });

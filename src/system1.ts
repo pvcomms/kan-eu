@@ -5,6 +5,8 @@
 // ones for our labels and softmax over just those. No text is generated, so
 // the answer can't fall outside the declared options.
 
+import { RUNTIME } from "./ollama.ts";
+
 export type Decision = {
   value: string;
   p: number;
@@ -39,7 +41,8 @@ export async function decide(
       think: false,
       logprobs: true,
       top_logprobs: 20,
-      options: { num_predict: 1, temperature: 0 },
+      keep_alive: RUNTIME.keep_alive,
+      options: { num_predict: 1, temperature: 0, num_ctx: RUNTIME.num_ctx },
       messages: [
         {
           role: "system",

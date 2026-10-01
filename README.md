@@ -6,7 +6,8 @@ _Kan_ is Japanese for intuition, the gut read. Before kan answers, a small model
 
 - **Local.** The models, your notes and the index all stay on your machine. Once the models are downloaded, kan needs no internet.
 - **EU weights.** Answers come from Mistral (Paris); note search uses Mixedbread (Berlin). Both are Apache 2.0.
-- **Small.** About 3.7 GB of models. The fast model needs roughly 4 GB of memory while it runs, so it should fit on a laptop with 8 GB (only tested so far on a Mac with Apple silicon).
+- **Small.** About 3.7 GB of models, and about 4 GB of memory while they run: kan pins the model's context to 8k tokens, which is plenty for notes and a conversation. (Left to Ollama's default, a Mac with lots of memory gives the model its full 262k context and reserves 32 GB for it.) It should fit on a laptop with 8 GB; so far it has only been tested on a Mac with Apple silicon.
+- **Quick.** `kan serve` loads the models as it starts and keeps them loaded for 30 minutes after the last question. On the Mac it was built on, the first word of an answer arrives in 60–300 ms.
 - **Your notes, read-only.** Point it at any folder of Markdown or text files. It never edits them.
 
 ## What's inside
@@ -76,7 +77,7 @@ kan searches your notes first, so the small model decides with the evidence in f
 
 1. If no note is even close (similarity under 0.55), kan skips your notes.
 2. Otherwise Ministral is shown your question and the three closest notes, and asked to pick A (use) or B (ignore). It generates one token. Ollama returns that token's probabilities, kan reads the two letters', and that pair is the bar.
-3. Nothing is written, so the decision can't ramble or fall outside the two options. It took about 200 ms on the Mac it was built on.
+3. Nothing is written, so the decision can't ramble or fall outside the two options. It takes 20–150 ms on the Mac it was built on.
 
 When the model is unsure, kan leans towards using the notes. An unneeded note costs a little context; a missing one costs a wrong answer.
 

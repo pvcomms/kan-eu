@@ -1,5 +1,24 @@
 // Minimal Ollama client: installed models + streaming chat.
 
+// Every request for the chat model uses the same settings, so Ollama never
+// reloads it between the notes decision and the answer. num_ctx matters most:
+// left unset, a big-memory Mac gives Ministral its full 262k context and
+// reserves 32 GB; 8k is plenty for kan (longest prompt ~2.5k tokens) and
+// takes 3.3 GB. keep_alive holds it between questions instead of Ollama's 5 min.
+export const RUNTIME = { num_ctx: 8192, keep_alive: "30m" };
+
+// Load the models in the background so the first question doesn't wait.
+export function warm(base: string, model: string, embed: string): void {
+  const post = (path: string, body: object) =>
+    fetch(`${base}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).catch(() => {});
+  post("/api/generate", { model, keep_alive: RUNTIME.keep_alive, options: { num_ctx: RUNTIME.num_ctx } });
+  post("/api/embed", { model: embed, input: "", keep_alive: RUNTIME.keep_alive });
+}
+
 export type Message = {
   role: "system" | "user" | "assistant";
   content: string;
@@ -23,7 +42,14 @@ export async function chat(
   const res = await fetch(`${base}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ model, messages, stream: true, think }),
+    body: JSON.stringify({
+      model,
+      messages,
+      stream: true,
+      think,
+      keep_alive: RUNTIME.keep_alive,
+      options: { num_ctx: RUNTIME.num_ctx },
+    }),
   });
   if (!res.ok || !res.body)
     throw new Error(`ollama ${res.status}: ${await res.text()}`);
