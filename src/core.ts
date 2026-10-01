@@ -69,7 +69,8 @@ function systemPrompt(cfg: Config, hits: Hit[]): string {
     parts.push(
       `# The user's notes (retrieved for this message)\n\n${notes}\n\n` +
         `Answer from these notes where they apply and cite them inline as [1], [2]. ` +
-        `If they don't contain the answer, say it isn't in their notes rather than guessing.`,
+        `If they don't contain the answer, say so in one line ("Not in your notes."), then answer from general ` +
+        `knowledge if you can, clearly as general knowledge. Never present general knowledge as something from their notes.`,
     );
   }
   return parts.filter(Boolean).join("\n\n---\n\n");
