@@ -34,33 +34,53 @@ function inline(s, fn) {
 }
 
 function markdown(src, fn) {
+  // escape first, then format line by line: lists may follow a heading or a
+  // paragraph in the same block, so group consecutive lines by kind
   const out = [];
-  esc(src)
-    .split(/```[^\n]*\n?/)
-    .forEach((part, i) => {
-      if (i % 2 === 1) {
-        out.push(`<pre><code>${part.replace(/\n$/, "")}</code></pre>`);
-        return;
+  const parts = esc(src).split(/```[^\n]*\n?/);
+  parts.forEach((part, i) => {
+    if (i % 2 === 1) {
+      out.push(`<pre><code>${part.replace(/\n$/, "")}</code></pre>`);
+      return;
+    }
+    let para = [];
+    let list = null; // { tag, items }
+    const flushPara = () => {
+      if (para.length) out.push(`<p>${inline(para.join("<br>"), fn)}</p>`);
+      para = [];
+    };
+    const flushList = () => {
+      if (list) out.push(`<${list.tag}>${list.items.map((x) => `<li>${inline(x, fn)}</li>`).join("")}</${list.tag}>`);
+      list = null;
+    };
+    for (const raw of part.split("\n")) {
+      const line = raw.trimEnd();
+      const ul = line.match(/^\s*[-*•]\s+(.*)$/);
+      const ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
+      const h = line.match(/^#{1,6}\s+(.*)$/);
+      if (!line.trim()) {
+        flushPara();
+        flushList();
+      } else if (ul || ol) {
+        flushPara();
+        const tag = ul ? "ul" : "ol";
+        if (list && list.tag !== tag) flushList();
+        if (!list) list = { tag, items: [] };
+        list.items.push((ul || ol)[1]);
+      } else if (h) {
+        flushPara();
+        flushList();
+        out.push(`<h3>${inline(h[1], fn)}</h3>`);
+      } else if (list && /^\s{2,}\S/.test(raw)) {
+        list.items[list.items.length - 1] += " " + line.trim(); // wrapped list item
+      } else {
+        flushList();
+        para.push(line);
       }
-      for (const block of part.split(/\n{2,}/)) {
-        const b = block.trim();
-        if (!b) continue;
-        const lines = b.split("\n");
-        if (lines.every((l) => /^\s*[-*•]\s+/.test(l))) {
-          out.push(
-            `<ul>${lines.map((l) => `<li>${inline(l.replace(/^\s*[-*•]\s+/, ""), fn)}</li>`).join("")}</ul>`,
-          );
-        } else if (lines.every((l) => /^\s*\d+[.)]\s+/.test(l))) {
-          out.push(
-            `<ol>${lines.map((l) => `<li>${inline(l.replace(/^\s*\d+[.)]\s+/, ""), fn)}</li>`).join("")}</ol>`,
-          );
-        } else if (/^#{1,6}\s/.test(b) && lines.length === 1) {
-          out.push(`<h3>${inline(b.replace(/^#{1,6}\s+/, ""), fn)}</h3>`);
-        } else {
-          out.push(`<p>${inline(lines.join("<br>"), fn)}</p>`);
-        }
-      }
-    });
+    }
+    flushPara();
+    flushList();
+  });
   return out.join("");
 }
 
