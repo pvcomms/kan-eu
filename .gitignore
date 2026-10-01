@@ -1,0 +1,4 @@
+# your data never enters git
+data/
+identity/USER.md
+.DS_Store

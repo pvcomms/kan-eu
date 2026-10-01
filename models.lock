@@ -1,0 +1,5 @@
+# Exact model builds kan was tested with (Ollama manifest digests, 1 Oct 2026).
+# install.sh warns if what you pulled differs; it still works, just untested.
+ministral-3:3b            sha256:f04aa1c738f64e13c625b82ae92504fc0260fa6723b509ed1ece0fa188179b1d
+mxbai-embed-large:latest  sha256:468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8
+ministral-3:8b            sha256:1922accd5827ebe6829e536369195db25eaf664528dc66206d646ea3bb386b71

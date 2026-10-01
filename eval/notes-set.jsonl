@@ -1,0 +1,13 @@
+{"message":"how often should I lube my bike chain","expect":"Bike maintenance.md"}
+{"message":"what pressure do I run in my commuter tyres","expect":"Bike maintenance.md"}
+{"message":"how much water goes in the dal","expect":"Weeknight dal.md"}
+{"message":"what went wrong with the chard last year","expect":"Garden plan 2026.md"}
+{"message":"when do I start the tomatoes indoors","expect":"Garden plan 2026.md"}
+{"message":"what does the thin bar above each answer mean","expect":"The gut read.md"}
+{"message":"where does kan keep the index of my notes","expect":"Start here.md"}
+{"message":"what did I take away from the fast and slow thinking book","expect":"Reading notes - fast and slow thinking.md"}
+{"message":"what's the capital of portugal","expect":null}
+{"message":"what's 17 times 23","expect":null}
+{"message":"write a bash one-liner that lists the 5 largest files in a folder","expect":null}
+{"message":"translate 'good morning' into german","expect":null}
+{"message":"who wrote pride and prejudice","expect":null}

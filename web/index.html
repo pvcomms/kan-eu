@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>kan</title>
+    <link
+      rel="preload"
+      href="/fonts/newsreader-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="mast">
+      <span class="mark"
+        ><span class="kanji" aria-hidden="true">勘</span>kan</span
+      >
+      <p class="health" id="health" hidden></p>
+    </header>
+
+    <main class="thread" id="thread" aria-live="polite">
+      <p class="empty" id="empty">
+        Ask anything. If the answer is in your notes, kan finds it and shows
+        which note it came from.
+        <span class="keys">Enter sends · Shift+Enter for a new line</span>
+      </p>
+    </main>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <textarea
+        id="input"
+        rows="1"
+        placeholder="Ask kan"
+        aria-label="Message"
+      ></textarea>
+      <div class="controls">
+        <div class="choice" role="group" aria-label="Model">
+          <span class="choice-label">Model</span>
+          <button type="button" data-deep="false" aria-pressed="true">
+            fast
+          </button>
+          <button
+            type="button"
+            data-deep="true"
+            aria-pressed="false"
+            id="deep-btn"
+          >
+            deep
+          </button>
+        </div>
+        <div class="choice" role="group" aria-label="Use notes">
+          <span class="choice-label">Notes</span>
+          <button type="button" data-notes="" aria-pressed="true">auto</button>
+          <button type="button" data-notes="true" aria-pressed="false">
+            always
+          </button>
+          <button type="button" data-notes="false" aria-pressed="false">
+            never
+          </button>
+        </div>
+        <button type="submit" class="send" id="send" aria-label="Send">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 19V5M6 11l6-6 6 6" />
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <template id="turn-tpl">
+      <article class="turn">
+        <p class="asked"></p>
+        <div class="gut" hidden>
+          <div class="bar">
+            <span class="use"></span><span class="ignore"></span>
+          </div>
+          <p class="gut-line"></p>
+        </div>
+        <div class="answer"></div>
+        <ol class="sources" hidden></ol>
+        <p class="meta" hidden></p>
+      </article>
+    </template>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

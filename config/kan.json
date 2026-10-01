@@ -1,0 +1,27 @@
+{
+  "ollama": "http://127.0.0.1:11434",
+  "models": {
+    "fast": { "model": "ministral-3:3b", "think": false },
+    "deep": { "model": "ministral-3:8b", "think": false }
+  },
+  "system1": "ministral-3:3b",
+  "identity": ["identity/SOUL.md", "identity/USER.md"],
+  "memory": {
+    "db": "data/memory.db",
+    "embed": "mxbai-embed-large",
+    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "doc_prefix": "",
+    "k": 6,
+    "min_score": 0.5,
+    "gate": 0.55,
+    "question": "Should the assistant use these notes to answer the message?",
+    "threshold": 0.5,
+    "hints": {
+      "use": "the notes contain information that answers the message",
+      "ignore": "the notes are unrelated; the message is answerable without them"
+    },
+    "sources": [
+      { "name": "examples", "dir": "examples/notes" }
+    ]
+  }
+}

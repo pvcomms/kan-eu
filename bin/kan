@@ -1,0 +1,4 @@
+#!/bin/bash
+# kan CLI. Put it on your PATH: ln -s "$PWD/bin/kan" ~/.local/bin/kan
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+exec node --disable-warning=ExperimentalWarning "$DIR/src/kan.ts" "$@"
