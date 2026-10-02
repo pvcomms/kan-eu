@@ -8,12 +8,12 @@
   "identity": ["identity/SOUL.md", "identity/USER.md"],
   "memory": {
     "db": "data/memory.db",
-    "embed": "mxbai-embed-large",
-    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "embed": "kan-mxbai-xsmall:latest",
+    "query_prefix": "",
     "doc_prefix": "",
     "k": 6,
-    "min_score": 0.5,
-    "gate": 0.55,
+    "min_score": 0.25,
+    "gate": 0.3,
     "question": "Should the assistant use these notes to answer the message?",
     "threshold": 0.5,
     "hints": {

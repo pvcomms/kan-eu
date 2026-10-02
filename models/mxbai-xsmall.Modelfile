@@ -1,0 +1,2 @@
+# kan note search: Mixedbread mxbai-embed-xsmall-v1, q8_0 (24M params, 384 dims, no query prefix)
+FROM ./mxbai-embed-xsmall-v1-q8_0.gguf

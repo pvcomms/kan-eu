@@ -1,9 +1,9 @@
 # Exact weights kan installs.
-# Downloaded from the maker's Hugging Face repo at a fixed commit; install.sh
-# refuses the file unless its sha256 matches. (A plain Ollama pull of this
+# Downloaded from each maker's Hugging Face repo at a fixed commit; install.sh
+# refuses a file unless its sha256 matches. (A plain Ollama pull of the 3B
 # model brings a 0.8 GB vision part kan never uses.)
 # name              sha256                                                            url
 kan-ministral-3b    9ed150d4367e68df0ac8e1540f6ddc65b42d0ee26378329d1ecbca60f93fc5f8  https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-GGUF/resolve/eb599d408350ea2bb60452cb86be7c7b2fc28227/Ministral-3-3B-Instruct-2512-Q4_K_M.gguf
-# Pulled from the Ollama registry; install.sh notes it if the build differs.
-mxbai-embed-large:latest  sha256:468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8
+kan-mxbai-xsmall    21f9f06af9e4e895fcdcbf6c0d57ca1996fe22da54ecb6cc5f7733d785412d44  https://huggingface.co/mixedbread-ai/mxbai-embed-xsmall-v1/resolve/e6ac24e5d6efb8782b59de1647b3ececb4ece94e/gguf/mxbai-embed-xsmall-v1-q8_0.gguf
+# Optional, pulled from the Ollama registry; install.sh notes it if the build differs.
 ministral-3:8b            sha256:1922accd5827ebe6829e536369195db25eaf664528dc66206d646ea3bb386b71  (optional, --deep)
