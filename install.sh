@@ -1,7 +1,7 @@
 #!/bin/bash
-# kan installer: checks Node and Ollama, pulls the EU models, indexes the
+# kan installer: checks Node and Ollama, fetches the EU models, indexes the
 # example notes. Re-run it any time; it skips what's already done.
-#   ./install.sh          fast model + embeddings (~3.7 GB)
+#   ./install.sh          answers + note search (~2.8 GB)
 #   ./install.sh --deep   also the 8B model for harder questions (+6 GB)
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -18,19 +18,32 @@ major=$(node -p 'process.versions.node.split(".")[0]')
 command -v ollama >/dev/null || fail "Ollama is required: https://ollama.com/download"
 OLLAMA=${OLLAMA_HOST:-127.0.0.1:11434}
 curl -sf "http://${OLLAMA#http://}/api/version" >/dev/null || fail "Ollama isn't running. Start it (open the app, or: ollama serve), then re-run."
+have=$(ollama list | awk 'NR>1 {print $1}')
+sha() { shasum -a 256 "$1" | cut -d' ' -f1; }
 
-models=(ministral-3:3b mxbai-embed-large:latest)
-[ "${1:-}" = "--deep" ] && models+=(ministral-3:8b)
-
-# --- pull, then check each against the tested build ---
-for m in "${models[@]}"; do
-  say "· pulling $m"
-  ollama pull "$m"
-  want=$(awk -v m="$m" '$1==m {sub("sha256:","",$2); print $2}' models.lock)
-  have=$(ollama list | awk -v m="$m" '$1==m {print $2}')
-  if [ -n "$want" ] && [ "${want:0:12}" != "$have" ]; then
-    say "  note: $m is a newer build ($have) than the one kan was tested with (${want:0:12})"
+# --- the answer model: Mistral's own file, checked, then built ---
+# Downloading the GGUF ourselves keeps out the 0.8 GB vision part that an
+# Ollama pull brings along, which kan never uses.
+while read -r name want url; do
+  grep -qxF "$name:latest" <<<"$have" && { say "· $name already installed"; continue; }
+  file=models/$(basename "$url")
+  if [ ! -f "$file" ] || [ "$(sha "$file")" != "$want" ]; then
+    say "· downloading $(basename "$url")"
+    curl -fL -# --retry 3 -C - -o "$file" "$url"
   fi
+  [ "$(sha "$file")" = "$want" ] || fail "$file doesn't match its sha256 in models.lock; delete it and re-run"
+  ollama create "$name" -f "models/${name#kan-}.Modelfile"
+  rm -f "$file"   # Ollama keeps its own copy
+done < <(awk '/^kan-/ {print $1, $2, $3}' models.lock)
+
+# --- note search (and the optional 8B), from the Ollama registry ---
+pulls=(mxbai-embed-large:latest)
+[ "${1:-}" = "--deep" ] && pulls+=(ministral-3:8b)
+for m in "${pulls[@]}"; do
+  grep -qxF "$m" <<<"$have" || { say "· pulling $m"; ollama pull "$m"; }
+  want=$(awk -v m="$m" '$1==m {sub("sha256:","",$2); print $2}' models.lock)
+  got=$(ollama list | awk -v m="$m" '$1==m {print $2}')
+  [ "${want:0:12}" = "$got" ] || say "  note: $m is a newer build ($got) than the one kan was tested with (${want:0:12})"
 done
 
 # --- your profile: a private copy git ignores ---

@@ -1,10 +1,10 @@
 {
   "ollama": "http://127.0.0.1:11434",
   "models": {
-    "fast": { "model": "ministral-3:3b", "think": false },
+    "fast": { "model": "kan-ministral-3b:latest", "think": false },
     "deep": { "model": "ministral-3:8b", "think": false }
   },
-  "system1": "ministral-3:3b",
+  "system1": "kan-ministral-3b:latest",
   "identity": ["identity/SOUL.md", "identity/USER.md"],
   "memory": {
     "db": "data/memory.db",

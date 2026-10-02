@@ -2,3 +2,4 @@
 data/
 identity/USER.md
 .DS_Store
+models/*.gguf

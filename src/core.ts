@@ -90,7 +90,7 @@ export async function turn(
   const m = cfg.models[name];
   if (!have.has(m.model))
     throw new Error(
-      `${m.model} isn't installed. Run ./install.sh (or: ollama pull ${m.model})`,
+      `${m.model} isn't installed. Run ./install.sh${name === "deep" ? " --deep" : ""}`,
     );
   emit({ type: "model", name, model: m.model });
 
